@@ -13,7 +13,9 @@ const localNameCache = {}
 export const importLocalName = (name, state, bypassCache = false) => {
   const cacheKey = name + state.file.opts.filename
 
-  if (!bypassCache && cacheKey in localNameCache) {
+  const foundInCache =
+    cacheKey in localNameCache && localNameCache[cacheKey] !== false
+  if (!bypassCache && foundInCache) {
     return localNameCache[cacheKey]
   }
 
@@ -107,7 +109,9 @@ export const isWithThemeHelper = t => (tag, state) =>
   t.isIdentifier(tag) && tag.name === importLocalName('withTheme', state)
 
 export const isHelper = t => (tag, state) =>
-  isCSSHelper(t)(tag, state) || isKeyframesHelper(t)(tag, state) || isWithThemeHelper(t)(tag, state)
+  isCSSHelper(t)(tag, state) ||
+  isKeyframesHelper(t)(tag, state) ||
+  isWithThemeHelper(t)(tag, state)
 
 export const isPureHelper = t => (tag, state) =>
   isCSSHelper(t)(tag, state) ||
